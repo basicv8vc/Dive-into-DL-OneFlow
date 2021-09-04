@@ -3,6 +3,21 @@
 * [安装](chapter_installation/index.md)
 * [符号](chapter_notation/index.md) 
 * [1. 前言](chapter_introduction/index.md)
+  * [1.1. 日常生活中的机器学习](chapter_introduction/daily_machine_learning.md)
+  * [1.2. 关键组件](chapter_introduction/key_components.md)
+  * [1.3. 各种机器学习问题](chapter_introduction/taxology.md)
+  * [1.4. 起源](chapter_introduction/roots.md)
+  * [1.5. 深度学习之路](chapter_introduction/road_to_deep_learning.md)
+  * [1.6. 成功案例](chapter_introduction/success_stories.md)
+  * [1.7. 特点](chapter_introduction/characteristics.md)
+  * [1.8. 小结](chapter_introduction/summary.md)
+  * [1.9. 练习](chapter_introduction/exercises.md)
+  * [1.10. 参考文献](chapter_introduction/reference.md)
+
+<!-- 
+* [2. 预备知识](chapter_preliminaries/index.md)
+   * [2.1. 数据操作](chapter_preliminaries/ndarray.md) -->
+
 
 <!-- * 2\. 预备知识
    * [2.1 环境配置](chapter02_prerequisite/2.1_install.md)
