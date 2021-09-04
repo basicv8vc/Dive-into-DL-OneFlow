@@ -1,6 +1,7 @@
 * [简介]()
 * [序言](chapter_preface/index.md)
-
+* [安装](chapter_installation/index.md)
+* 
 <!-- * [1. 深度学习简介](chapter01_DL-intro/deep-learning-intro.md) -->
 
 <!-- * 2\. 预备知识
