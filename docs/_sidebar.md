@@ -13,10 +13,8 @@
   * [1.8. 小结](chapter_introduction/summary.md)
   * [1.9. 练习](chapter_introduction/exercises.md)
   * [1.10. 参考文献](chapter_introduction/reference.md)
-
-<!-- 
 * [2. 预备知识](chapter_preliminaries/index.md)
-   * [2.1. 数据操作](chapter_preliminaries/ndarray.md) -->
+   * [2.1. 数据操作](chapter_preliminaries/ndarray.md)
 
 
 <!-- * 2\. 预备知识
