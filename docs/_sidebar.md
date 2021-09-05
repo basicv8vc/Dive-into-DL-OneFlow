@@ -19,6 +19,7 @@
    * [2.3. 线性代数](chapter_preliminaries/linear-algebra.md)
    * [2.4. 微分](chapter_preliminaries/calculus.md)
    * [2.5. 自动求导](chapter_preliminaries/autograd.md)
+   * [2.6. 概率](chapter_preliminaries/probability.md)
 
 
 <!-- * 2\. 预备知识

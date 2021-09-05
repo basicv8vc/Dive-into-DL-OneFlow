@@ -31,7 +31,7 @@ $$f'(x) = \lim_{h \rightarrow 0} \frac{f(x+h) - f(x)}{h} \tag{2.4.1}$$
 ```python
 %matplotlib inline
 from IPython import display
-from matplotlib import pyplot as plt
+import matplotlib.pyplot as plt
 import numpy as np
 
 def f(x):
