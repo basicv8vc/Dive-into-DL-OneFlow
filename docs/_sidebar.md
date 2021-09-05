@@ -20,6 +20,7 @@
    * [2.4. 微分](chapter_preliminaries/calculus.md)
    * [2.5. 自动求导](chapter_preliminaries/autograd.md)
    * [2.6. 概率](chapter_preliminaries/probability.md)
+   * [2.7. 查阅文档](chapter_preliminaries/lookup-api.md)
 
 
 <!-- * 2\. 预备知识
