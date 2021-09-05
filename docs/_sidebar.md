@@ -15,6 +15,7 @@
   * [1.10. 参考文献](chapter_introduction/reference.md)
 * [2. 预备知识](chapter_preliminaries/index.md)
    * [2.1. 数据操作](chapter_preliminaries/ndarray.md)
+   * [2.2. 数据预处理](chapter_preliminaries/pandas.md)
 
 
 <!-- * 2\. 预备知识
