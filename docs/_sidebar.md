@@ -26,6 +26,7 @@
   * [3.2. 线性回归的从零开始实现](chapter_linear-networks/linear-regression-scratch.md)
   * [3.3. 线性回归的简洁实现](chapter_linear-networks/linear-regression-concise.md)
   * [3.4. softmax分类](chapter_linear-networks/softmax-regression.md)
+  * [3.5. 图像分类数据集](chapter_linear-networks/image-classification-dataset.md)
 
 
 <!-- * 2\. 预备知识
