@@ -23,6 +23,7 @@
    * [2.7. 查阅文档](chapter_preliminaries/lookup-api.md)
 * [3. 线性神经网络](chapter_linear-networks/index.md)
   * [3.1. 线性回归](chapter_linear-networks/linear-regression.md)
+  * [3.2. 线性回归的从零开始实现](chapter_linear-networks/linear-regression-scratch.md)
 
 
 <!-- * 2\. 预备知识
