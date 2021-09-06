@@ -28,6 +28,7 @@
   * [3.4. softmax回归](chapter_linear-networks/softmax-regression.md)
   * [3.5. 图像分类数据集](chapter_linear-networks/image-classification-dataset.md)
   * [3.6. softmax回归的从零开始实现](chapter_linear-networks/softmax-regression-scratch.md)
+  * [3.7. softmax回归的简洁实现](chapter_linear-networks/softmax-regression-concise.md)
 
 
 <!-- * 2\. 预备知识

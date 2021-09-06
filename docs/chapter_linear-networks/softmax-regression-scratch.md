@@ -188,8 +188,7 @@ def train_epoch_ch3(net, train_iter, loss, updater):
             updater.zero_grad()
             l.backward()
             updater.step()
-            metric.add(float(l) * len(y), accuracy(y_hat, y),
-                       y.size().numel())
+            metric.add(float(l.item()) * y.shape[0], accuracy(y_hat, y), y.size().numel())
         else:
             # 使用定制的优化器和损失函数
             l.sum().backward()
@@ -291,17 +290,16 @@ def predict_ch3(net, test_iter, n=6):
     for X, y in test_iter:
         break
     trues = get_fashion_mnist_labels(y)
-    preds = get_fashion_mnist_labels(d2l.argmax(net(X), axis=1))
+    preds = get_fashion_mnist_labels(flow.argmax(net(X), dim=1))
     titles = [true +'\n' + pred for true, pred in zip(trues, preds)]
     show_images(
         flow.reshape(X[0:n], (n, 28, 28)), 1, n, titles=titles[0:n])
 
-predict_ch3(net, test_iter)
+predict_ch3(net, test_iter)s
 ```
 <div align=center>
 <img src="../img/output_softmax-regression-scratch_a48321_192_0.svg"/>
 </div>
-<center>（待更新）</center>
 
 ## 小结
 
