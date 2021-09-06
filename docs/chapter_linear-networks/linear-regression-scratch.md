@@ -172,13 +172,6 @@ def squared_loss(y_hat, y):
 下面的函数实现小批量随机梯度下降更新。该函数接受模型参数集合、学习速率和批量大小作为输入。每一步更新的大小由学习速率`lr`决定。
 因为我们计算的损失是一个批量样本的总和，所以我们用批量大小（`batch_size`）来归一化步长，这样步长大小就不会取决于我们对批量大小的选择。
 
-<!-- ```python
-def sgd(params, lr, batch_size):
-    """小批量随机梯度下降。"""
-    for param in params:
-        param[:] = param - lr * param.grad / batch_size
-``` -->
-
 ```python
 def sgd(params, lr, batch_size):
     """小批量随机梯度下降。"""
