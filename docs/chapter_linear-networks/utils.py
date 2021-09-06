@@ -1,6 +1,8 @@
 # encoding:utf-8
 from IPython import display
 import matplotlib.pyplot as plt
+import oneflow as flow
+import numpy as np
 
 
 def use_svg_display():
@@ -66,3 +68,12 @@ def plot(X,
         else:
             axes.plot(y, fmt)
     set_axes(axes, xlabel, ylabel, xlim, ylim, xscale, yscale, legend)
+
+
+def synthetic_data(w, b, num_examples):
+    """生成 y = Xw + b + 噪声。"""
+    X = flow.randn(num_examples, w.shape[0])
+    y = flow.matmul(X, w.reshape(w.shape[0], -1)) + b
+    y = y.reshape(-1)
+    y += flow.tensor(np.random.normal(0, 0.01, y.shape[0]).astype(np.float32))
+    return X, flow.reshape(y, (-1, 1))
