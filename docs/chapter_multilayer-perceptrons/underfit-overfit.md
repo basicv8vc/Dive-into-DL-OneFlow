@@ -1,5 +1,4 @@
 # 模型选择、欠拟合和过拟合
-:label:`sec_model_selection`
 
 作为机器学习科学家，我们的目标是发现*模式*（pattern）。但是，我们如何才能确定模型是真正发现了一种泛化的模式，而不是简单地记住了数据呢？例如，我们想要在患者的基因数据与痴呆状态之间寻找模式，其中标签是从集合$\{\text{痴呆}, \text{轻度认知障碍}, \text{健康}\}$中提取的。因为基因可以唯一确定每个个体（不考虑双胞胎），所以在这个任务中是有可能记住整个数据集的。
 
@@ -12,7 +11,7 @@
 
 将模型在训练数据上拟合得比在潜在分布中更接近的现象称为*过拟合*（overfitting），用于对抗过拟合的技术称为*正则化*（regularization）。在前面的章节中，你可能在用Fashion-MNIST数据集做实验时已经观察到了这种现象。在实验中调整模型结构或超参数时，你会发现，如果有足够多的神经元、层数和训练迭代周期，模型最终可以在训练集上达到完美的精度，此时测试集的准确性却下降了。
 
-## 训练误差和泛化误差
+## 4.4.1. 训练误差和泛化误差
 
 为了进一步讨论这一现象，我们需要了解训练误差和泛化误差。*训练误差*（training error）是指，我们的模型在训练数据集上计算得到的误差。*泛化误差*（generalization error）是指，当我们将模型应用在同样从原始样本的分布中抽取的无限多的数据样本时，我们模型误差的期望。
 
@@ -24,7 +23,7 @@
 
 最后，考虑尝试根据一些可用的上下文特征对掷硬币的结果（类别0：正面，类别1：反面）进行分类的问题。假设硬币是公平的。无论我们想出什么算法，泛化误差始终是$\frac{1}{2}$。然而，对于大多数算法，我们应该期望训练误差会更低（取决于运气）。考虑数据集{0，1，1，1，0，1}。我们的算法不需要额外的特征，将倾向于总是预测*多数类*，从我们有限的样本来看，它似乎是*1*。在这种情况下，总是预测类1的模型将产生$\frac{1}{3}$的误差，这比我们的泛化误差要好得多。当我们逐渐增加数据量，正面比例明显偏离$\frac{1}{2}$的可能性将会降低，我们的训练误差将与泛化误差相匹配。
 
-### 统计学习理论
+### 4.4.1.1. 统计学习理论
 
 由于泛化是机器学习中的基本问题，许多数学家和理论家毕生致力于研究描述这一现象的形式理论。在[同名定理（eponymous theorem）](https://en.wikipedia.org/wiki/Glivenko%E2%80%93Cantelli_theorem)]中，格里文科和坎特利推导出了训练误差收敛到泛化误差的速率。在一系列开创性的论文中，[Vapnik和Chervonenkis](https://en.wikipedia.org/wiki/Vapnik%E2%80%93Chervonenkis_theory)将这一理论扩展到更一般种类的函数。这项工作为统计学习理论奠定了基础。
 
@@ -40,7 +39,7 @@
 
 当我们训练模型时，我们试图找到一个能够尽可能拟合训练数据的函数。如果该函数灵活到可以像捕捉真实模式一样容易地捕捉到干扰的模式，那么它可能执行得“太好了”，而不能产生一个对看不见的数据做到很好泛化的模型。这种情况正是我们想要避免，或起码控制的。深度学习中有许多启发式的技术旨在防止过拟合。
 
-### 模型复杂性
+### 4.4.1.2. 模型复杂性
 
 当我们有简单的模型和大量的数据时，我们期望泛化误差与训练误差相近。当我们有更复杂的模型和更少的样本时，我们预计训练误差会下降，但泛化误差会增大。模型复杂性由什么构成是一个复杂的问题。一个模型是否能很好地泛化取决于很多因素。例如，具有更多参数的模型可能被认为更复杂。参数有更大取值范围的模型可能更为复杂。通常，对于神经网络，我们认为需要更多训练迭代的模型比较复杂，而需要“提前停止”（early stopping）的模型（意味着具有较少训练迭代周期）就不那么复杂。
 
@@ -52,13 +51,13 @@
 1. 参数采用的值。当权重的取值范围较大时，模型可能更容易过拟合。
 1. 训练样本的数量。即使你的模型很简单，也很容易过拟合只包含一两个样本的数据集。而过拟合一个有数百万个样本的数据集则需要一个极其灵活的模型。
 
-## 模型选择
+## 4.4.2. 模型选择
 
 在机器学习中，我们通常在评估几个候选模型后选择最终的模型。这个过程叫做*模型选择*。有时，需要进行比较的模型在本质上是完全不同的（比如，决策树与线性模型）。又有时，我们需要比较不同的超参数设置下的同一类模型。
 
 例如，训练多层感知机模型时，我们可能希望比较具有不同数量的隐藏层、不同数量的隐藏单元以及不同的的激活函数组合的模型。为了确定候选模型中的最佳模型，我们通常会使用验证集。
 
-### 验证集
+### 4.4.2.1. 验证集
 
 原则上，在我们确定所有的超参数之前，我们不应该用到测试集。如果我们在模型选择过程中使用测试数据，可能会有过拟合测试数据的风险。那我们就麻烦大了。如果我们过拟合了训练数据，还有在测试数据上的评估来判断过拟合。但是如果我们过拟合了测试数据，我们又该怎么知道呢？
 
@@ -68,11 +67,11 @@
 
 解决此问题的常见做法是将我们的数据分成三份，除了训练和测试数据集之外，还增加一个*验证数据集*（validation dataset），也叫*验证集*（validation set）。但现实是验证数据和测试数据之间的边界模糊得令人担忧。除非另有明确说明，否则在这本书的实验中，我们实际上是在使用应该被正确地称为训练数据和验证数据的东西，并没有真正的测试数据集。因此，书中每次实验报告的准确度都是验证集准确度，而不是测试集准确度。
 
-### $K$折交叉验证
+### 4.4.2.2.  $K$折交叉验证
 
 当训练数据稀缺时，我们甚至可能无法提供足够的数据来构成一个合适的验证集。这个问题的一个流行的解决方案是采用$K$*折交叉验证*。这里，原始训练数据被分成$K$个不重叠的子集。然后执行$K$次模型训练和验证，每次在$K-1$个子集上进行训练，并在剩余的一个子集（在该轮中没有用于训练的子集）上进行验证。最后，通过对$K$次实验的结果取平均来估计训练和验证误差。
 
-## 欠拟合还是过拟合？
+## 4.4.3. 欠拟合还是过拟合？
 
 当我们比较训练和验证误差时，我们要注意两种常见的情况。首先，我们要注意这样的情况：训练误差和验证误差都很严重，但它们之间仅有一点差距。如果模型不能降低训练误差，这可能意味着我们的模型过于简单（即表达能力不足），无法捕获我们试图学习的模式。此外，由于我们的训练和验证误差之间的*泛化误差*很小，我们有理由相信可以用一个更复杂的模型降低训练误差。这种现象被称为*欠拟合*（underfitting）。
 
@@ -80,64 +79,47 @@
 
 我们是否过拟合或欠拟合可能取决于模型复杂性和可用训练数据集的大小，这两个点将在下面进行讨论。
 
-### 模型复杂性
+### 4.4.3.1. 模型复杂性
 
 为了说明一些关于过拟合和模型复杂性的经典的直觉，我们给出一个多项式的例子。给定由单个特征$x$和对应实数标签$y$组成的训练数据，我们试图找到下面的$d$阶多项式来估计标签$y$。
 
-$$\hat{y}= \sum_{i=0}^d x^i w_i$$
+$$\hat{y}= \sum_{i=0}^d x^i w_i \tag{4.4.1}$$
 
 这只是一个线性回归问题，我们的特征是$x$的幂给出的，模型的权重是$w_i$给出的，偏置是$w_0$给出的（因为对于所有的$x$都有$x^0 = 1$）。由于这只是一个线性回归问题，我们可以使用平方误差作为我们的损失函数。
 
 高阶多项式函数比低阶多项式函数复杂得多。高阶多项式的参数较多，模型函数的选择范围较广。因此在固定训练数据集的情况下，高阶多项式函数相对于低阶多项式的训练误差应该始终更低（最坏也是相等）。事实上，当数据样本包含了$x$的不同值时，函数阶数等于数据样本数量的多项式函数可以完美拟合训练集。在 :numref:`fig_capacity_vs_error` 中，我们直观地描述了多项式的阶数和欠拟合与过拟合之间的关系。
 
+<div align=center>
+<img src="../img/capacity-vs-error.svg"/>
+</div>
+<center>图4.4.1 模型复杂度对欠拟合和过拟合的影响</center>
 
-![模型复杂度对欠拟合和过拟合的影响](../img/capacity-vs-error.svg)
-:label:`fig_capacity_vs_error`
-
-### 数据集大小
+### 4.4.3.2. 数据集大小
 
 另一个需要牢记的重要因素是数据集的大小。训练数据集中的样本越少，我们就越有可能（且更严重地）遇到过拟合。随着训练数据量的增加，泛化误差通常会减小。此外，一般来说，更多的数据不会有什么坏处。对于固定的任务和数据分布，模型复杂性和数据集大小之间通常存在关系。给出更多的数据，我们可能会尝试拟合一个更复杂的模型。能够拟合更复杂的模型可能是有益的。如果没有足够的数据，简单的模型可能更有用。对于许多任务，深度学习只有在有数千个训练样本时才优于线性模型。从一定程度上来说，深度学习目前的成功要归功于互联网公司、廉价存储、互联设备以及数字化经济带来的海量数据集。
 
-## 多项式回归
+## 4.4.4. 多项式回归
 
-我们现在可以(**通过多项式拟合来交互地探索这些概念**)。
+我们现在可以通过多项式拟合来交互地探索这些概念。
 
-```{.python .input}
-from d2l import mxnet as d2l
-from mxnet import gluon, np, npx
-from mxnet.gluon import nn
-import math
-npx.set_np()
-```
-
-```{.python .input}
-#@tab pytorch
-from d2l import torch as d2l
-import torch
-from torch import nn
+```python
+import oneflow as flow
+from oneflow import nn
 import numpy as np
 import math
+from utils import *
 ```
 
-```{.python .input}
-#@tab tensorflow
-from d2l import tensorflow as d2l
-import tensorflow as tf
-import numpy as np
-import math
-```
+### 4.4.4.1. 生成数据集
 
-### 生成数据集
+首先，我们需要数据。给定$x$，我们将使用以下三阶多项式来生成训练和测试数据的标签：
 
-首先，我们需要数据。给定$x$，我们将[**使用以下三阶多项式来生成训练和测试数据的标签：**]
-
-(**$$y = 5 + 1.2x - 3.4\frac{x^2}{2!} + 5.6 \frac{x^3}{3!} + \epsilon \text{ where }
-\epsilon \sim \mathcal{N}(0, 0.1^2).$$**)
+$$y = 5 + 1.2x - 3.4\frac{x^2}{2!} + 5.6 \frac{x^3}{3!} + \epsilon \text{ where }
+\epsilon \sim \mathcal{N}(0, 0.1^2). \tag{4.4.2}$$
 
 噪声项$\epsilon$服从均值为0且标准差为0.1的正态分布。在优化的过程中，我们通常希望避免非常大的梯度值或损失值。这就是我们将*特征*从$x^i$调整为$\frac{x^i}{i!}$的原因，这样可以避免很大的$i$带来的特别大的指数值。我们将为训练集和测试集各生成100个样本。
 
-```{.python .input}
-#@tab all
+```python
 max_degree = 20  # 多项式的最大阶数
 n_train, n_test = 100, 100  # 训练和测试数据集大小
 true_w = np.zeros(max_degree)  # 分配大量的空间
@@ -153,77 +135,47 @@ labels = np.dot(poly_features, true_w)
 labels += np.random.normal(scale=0.1, size=labels.shape)
 ```
 
-同样，存储在`poly_features`中的单项式由gamma函数重新缩放，其中$\Gamma(n)=(n-1)!$。从生成的数据集中查[**看一下前2个样本**]。第一个值是与偏置相对应的常量特征。
+同样，存储在`poly_features`中的单项式由gamma函数重新缩放，其中$\Gamma(n)=(n-1)!$。从生成的数据集中查看一下前2个样本。第一个值是与偏置相对应的常量特征。
 
-```{.python .input}
-#@tab pytorch, tensorflow
+```python
 # NumPy ndarray转换为tensor
-true_w, features, poly_features, labels = [d2l.tensor(x, dtype=
-    d2l.float32) for x in [true_w, features, poly_features, labels]]
-```
+true_w, features, poly_features, labels = [flow.tensor(x, dtype=
+    flow.float32) for x in [true_w, features, poly_features, labels]]
 
-```{.python .input}
-#@tab all
 features[:2], poly_features[:2, :], labels[:2]
 ```
+    tensor([[0.8750],
+           [0.1378]], dtype=oneflow.float32),
+    tensor([[1.0000e+00, 8.7498e-01, 3.8279e-01, 1.1164e-01, 2.4421e-02, 4.2736e-03,
+            6.2322e-04, 7.7900e-05, 8.5201e-06, 8.2832e-07, 7.2476e-08, 5.7650e-09,
+            4.2035e-10, 2.8292e-11, 1.7682e-12, 1.0314e-13, 5.6404e-15, 2.9031e-16,
+            1.4112e-17, 6.4986e-19],
+            [1.0000e+00, 1.3782e-01, 9.4973e-03, 4.3631e-04, 1.5033e-05, 4.1437e-07,
+            9.5182e-09, 1.8740e-10, 3.2285e-12, 4.9439e-14, 6.8138e-16, 8.5371e-18,
+            9.8049e-20, 1.0395e-21, 1.0233e-23, 9.4021e-26, 8.0988e-28, 6.5658e-30,
+            5.0272e-32, 3.6466e-34]], dtype=oneflow.float32),
+    tensor([5.3430, 5.0984], dtype=oneflow.float32)
 
-### 对模型进行训练和测试
 
-首先让我们[**实现一个函数来评估模型在给定数据集上的损失**]。
+### 4.4.4.2. 对模型进行训练和测试
 
-```{.python .input}
-#@tab mxnet, tensorflow
-def evaluate_loss(net, data_iter, loss):  #@save
+首先让我们实现一个函数来评估模型在给定数据集上的损失。
+
+```python
+def evaluate_loss(net, data_iter, loss):
     """评估给定数据集上模型的损失。"""
-    metric = d2l.Accumulator(2)  # 损失的总和, 样本数量
-    for X, y in data_iter:
-        l = loss(net(X), y)
-        metric.add(d2l.reduce_sum(l), d2l.size(l))
-    return metric[0] / metric[1]
-```
-
-```{.python .input}
-#@tab pytorch
-def evaluate_loss(net, data_iter, loss):  #@save
-    """评估给定数据集上模型的损失。"""
-    metric = d2l.Accumulator(2)  # 损失的总和, 样本数量
+    metric = Accumulator(2)  # 损失的总和, 样本数量
     for X, y in data_iter:
         out = net(X)
-        y = d2l.reshape(y, out.shape)
+        y = y.reshape(*out.shape)
         l = loss(out, y)
-        metric.add(d2l.reduce_sum(l), d2l.size(l))
+        metric.add(l.sum().item(), l.numel())
     return metric[0] / metric[1]
 ```
 
-现在[**定义训练函数**]。
+现在定义训练函数。
 
-```{.python .input}
-def train(train_features, test_features, train_labels, test_labels,
-          num_epochs=400):
-    loss = gluon.loss.L2Loss()
-    net = nn.Sequential()
-    # 不设置偏置，因为我们已经在多项式特征中实现了它
-    net.add(nn.Dense(1, use_bias=False))
-    net.initialize()
-    batch_size = min(10, train_labels.shape[0])
-    train_iter = d2l.load_array((train_features, train_labels), batch_size)
-    test_iter = d2l.load_array((test_features, test_labels), batch_size,
-                               is_train=False)
-    trainer = gluon.Trainer(net.collect_params(), 'sgd',
-                            {'learning_rate': 0.01})
-    animator = d2l.Animator(xlabel='epoch', ylabel='loss', yscale='log',
-                            xlim=[1, num_epochs], ylim=[1e-3, 1e2],
-                            legend=['train', 'test'])
-    for epoch in range(num_epochs):
-        d2l.train_epoch_ch3(net, train_iter, loss, trainer)
-        if epoch == 0 or (epoch + 1) % 20 == 0:
-            animator.add(epoch + 1, (evaluate_loss(net, train_iter, loss),
-                                     evaluate_loss(net, test_iter, loss)))
-    print('weight:', net[0].weight.data().asnumpy())
-```
-
-```{.python .input}
-#@tab pytorch
+```python
 def train(train_features, test_features, train_labels, test_labels,
           num_epochs=400):
     loss = nn.MSELoss()
@@ -231,90 +183,82 @@ def train(train_features, test_features, train_labels, test_labels,
     # 不设置偏置，因为我们已经在多项式特征中实现了它
     net = nn.Sequential(nn.Linear(input_shape, 1, bias=False))
     batch_size = min(10, train_labels.shape[0])
-    train_iter = d2l.load_array((train_features, train_labels.reshape(-1,1)),
+    train_iter = load_array((train_features, train_labels.reshape(-1,1)),
                                 batch_size)
-    test_iter = d2l.load_array((test_features, test_labels.reshape(-1,1)),
+    test_iter = load_array((test_features, test_labels.reshape(-1,1)),
                                batch_size, is_train=False)
-    trainer = torch.optim.SGD(net.parameters(), lr=0.01)
-    animator = d2l.Animator(xlabel='epoch', ylabel='loss', yscale='log',
+    trainer = flow.optim.SGD(net.parameters(), lr=0.01)
+    animator = Animator(xlabel='epoch', ylabel='loss', yscale='log',
                             xlim=[1, num_epochs], ylim=[1e-3, 1e2],
                             legend=['train', 'test'])
     for epoch in range(num_epochs):
-        d2l.train_epoch_ch3(net, train_iter, loss, trainer)
+        train_epoch_ch3(net, train_iter, loss, trainer)
         if epoch == 0 or (epoch + 1) % 20 == 0:
             animator.add(epoch + 1, (evaluate_loss(net, train_iter, loss),
                                      evaluate_loss(net, test_iter, loss)))
     print('weight:', net[0].weight.data.numpy())
 ```
 
-```{.python .input}
-#@tab tensorflow
-def train(train_features, test_features, train_labels, test_labels,
-          num_epochs=400):
-    loss = tf.losses.MeanSquaredError()
-    input_shape = train_features.shape[-1]
-    # 不设置偏置，因为我们已经在多项式特征中实现了它
-    net = tf.keras.Sequential()
-    net.add(tf.keras.layers.Dense(1, use_bias=False))
-    batch_size = min(10, train_labels.shape[0])
-    train_iter = d2l.load_array((train_features, train_labels), batch_size)
-    test_iter = d2l.load_array((test_features, test_labels), batch_size,
-                               is_train=False)
-    trainer = tf.keras.optimizers.SGD(learning_rate=.01)
-    animator = d2l.Animator(xlabel='epoch', ylabel='loss', yscale='log',
-                            xlim=[1, num_epochs], ylim=[1e-3, 1e2],
-                            legend=['train', 'test'])
-    for epoch in range(num_epochs):
-        d2l.train_epoch_ch3(net, train_iter, loss, trainer)
-        if epoch == 0 or (epoch + 1) % 20 == 0:
-            animator.add(epoch + 1, (evaluate_loss(net, train_iter, loss),
-                                     evaluate_loss(net, test_iter, loss)))
-    print('weight:', net.get_weights()[0].T)
-```
-
-### [**三阶多项式函数拟合(正态)**]
+### 4.4.4.2. 对模型进行训练和测试
 
 我们将首先使用三阶多项式函数，它与数据生成函数的阶数相同。结果表明，该模型能有效降低训练损失和测试损失。学习到的模型参数也接近真实值$w = [5, 1.2, -3.4, 5.6]$。
 
-```{.python .input}
-#@tab all
+```python
 # 从多项式特征中选择前4个维度，即 1, x, x^2/2!, x^3/3!
 train(poly_features[:n_train, :4], poly_features[n_train:, :4],
       labels[:n_train], labels[n_train:])
 ```
+    weight: [[ 4.982654   1.4877713 -3.3066907  4.6848907]]
 
-### [**线性函数拟合(欠拟合)**]
+<div align=center>
+<img src="../img/output_underfit-overfit_ec26bd_56_1.svg"/>
+</div>
+
+### 4.4.4.4. 线性函数拟合(欠拟合)
 
 让我们再看看线性函数拟合。在经历了早期的下降之后，进一步减少该模型的训练损失变得困难。在最后一个迭代周期完成后，训练损失仍然很高。当用来拟合非线性模式（如这里的三阶多项式函数）时，线性模型容易欠拟合。
 
-```{.python .input}
-#@tab all
+```python
 # 从多项式特征中选择前2个维度，即 1, x
 train(poly_features[:n_train, :2], poly_features[n_train:, :2],
       labels[:n_train], labels[n_train:])
 ```
+    weight: [[3.752321  2.7337089]]
 
-### [**高阶多项式函数拟合(过拟合)**]
+<div align=center>
+<img src="../img/output_underfit-overfit_ec26bd_68_1.svg"/>
+</div>
+
+### 4.4.4.5. 高阶多项式函数拟合(过拟合)
 
 现在，让我们尝试使用一个阶数过高的多项式来训练模型。在这种情况下，没有足够的数据用于学到高阶系数应该具有接近于零的值。因此，这个过于复杂的模型会轻易受到训练数据中噪声的影响。虽然训练损失可以有效地降低，但测试损失仍然很高。结果表明，复杂模型对数据造成了过拟合。
 
-```{.python .input}
-#@tab all
+```python
 # 从多项式特征中选取所有维度
 train(poly_features[:n_train, :], poly_features[n_train:, :],
       labels[:n_train], labels[n_train:], num_epochs=1500)
 ```
+    weight: [[ 4.99991989e+00  1.22912443e+00 -3.36642098e+00  5.40590191e+00
+        -2.29462251e-01  1.30064464e+00 -1.32775098e-01 -7.36989751e-02
+        -2.29944140e-04  1.39354495e-02  1.64878622e-01  7.35239163e-02
+        -2.56654155e-02  1.54130071e-01  1.82161674e-01 -1.82536900e-01
+        1.11063853e-01  1.15380444e-01  6.54446557e-02  1.29324958e-01]]
+
+<div align=center>
+<img src="../img/wechat_20210907223738.jpg"/>
+</div>
+
 
 在接下来的章节中，我们将继续讨论过拟合问题和处理这些问题的方法，例如权重衰减和dropout。
 
-## 小结
+## 4.4.5. 小结
 
 * 由于不能基于训练误差来估计泛化误差，因此简单地最小化训练误差并不一定意味着泛化误差的减小。机器学习模型需要注意防止过拟合，来使得泛化误差最小。
 * 验证集可以用于模型选择，但不能过于随意地使用它。
 * 欠拟合是指模型无法继续减少训练误差。过拟合是指训练误差远小于验证误差。
 * 我们应该选择一个复杂度适当的模型，避免使用数量不足的训练样本。
 
-## 练习
+## 4.4.6. 练习
 
 1. 你能准确地解出这个多项式回归问题吗？提示：使用线性代数。
 1. 考虑多项式的模型选择：
@@ -323,15 +267,3 @@ train(poly_features[:n_train, :], poly_features[n_train:, :],
     1. 生成同样的图，作为数据量的函数。
 1. 如果你不对多项式特征$x^i$进行标准化($1/i!$)，会发生什么事情？你能用其他方法解决这个问题吗？
 1. 你能期待看到泛化误差为零吗？
-
-:begin_tab:`mxnet`
-[Discussions](https://discuss.d2l.ai/t/1807)
-:end_tab:
-
-:begin_tab:`pytorch`
-[Discussions](https://discuss.d2l.ai/t/1806)
-:end_tab:
-
-:begin_tab:`tensorflow`
-[Discussions](https://discuss.d2l.ai/t/1805)
-:end_tab:

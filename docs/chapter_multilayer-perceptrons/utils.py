@@ -110,6 +110,12 @@ def synthetic_data(w, b, num_examples):
     return X, flow.reshape(y, (-1, 1))
 
 
+def load_array(data_arrays, batch_size, is_train=True):
+    """构造一个OneFlow数据迭代器。"""
+    dataset = data.TensorDataset(*data_arrays)
+    return data.DataLoader(dataset, batch_size, shuffle=is_train)
+
+
 def get_dataloader_workers():
     """使用4个进程来读取数据。"""
     return 4
