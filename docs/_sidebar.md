@@ -34,6 +34,7 @@
   * [4.2. 从零开始实现多层感知机](chapter_multilayer-perceptrons/mlp-scratch.md)
   * [4.3. 多层感知机的简洁实现](chapter_multilayer-perceptrons/mlp-concise.md)
   * [4.4. 模型选择、欠拟合和过拟合](chapter_multilayer-perceptrons/underfit-overfit.md)
+  * [4.5. 权重衰减](chapter_multilayer-perceptrons/weight-decay.md)
 
 <!-- * 2\. 预备知识
    * [2.1 环境配置](chapter02_prerequisite/2.1_install.md)

@@ -248,7 +248,6 @@ train(poly_features[:n_train, :], poly_features[n_train:, :],
 <img src="../img/wechat_20210907223738.jpg"/>
 </div>
 
-
 在接下来的章节中，我们将继续讨论过拟合问题和处理这些问题的方法，例如权重衰减和dropout。
 
 ## 4.4.5. 小结

@@ -8,6 +8,16 @@ import oneflow.utils.vision.transforms as transforms
 import numpy as np
 
 
+def linreg(X, w, b):
+    """线性回归模型。"""
+    return flow.matmul(X, w) + b
+
+
+def squared_loss(y_hat, y):
+    """均方损失。"""
+    return (y_hat - flow.reshape(y, y_hat.shape))**2 / 2
+
+
 class Timer:
     """记录多次运行时间。"""
     def __init__(self):
@@ -317,3 +327,14 @@ def predict_ch3(net, test_iter, n=6):
     preds = get_fashion_mnist_labels(flow.argmax(net(X), dim=1))
     titles = [true + '\n' + pred for true, pred in zip(trues, preds)]
     show_images(flow.reshape(X[0:n], (n, 28, 28)), 1, n, titles=titles[0:n])
+
+
+def evaluate_loss(net, data_iter, loss):
+    """评估给定数据集上模型的损失。"""
+    metric = Accumulator(2)  # 损失的总和, 样本数量
+    for X, y in data_iter:
+        out = net(X)
+        y = y.reshape(*out.shape)
+        l = loss(out, y)
+        metric.add(l.sum().item(), l.numel())
+    return metric[0] / metric[1]
