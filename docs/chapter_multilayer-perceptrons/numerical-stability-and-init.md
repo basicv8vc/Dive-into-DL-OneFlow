@@ -1,5 +1,4 @@
 # 数值稳定性和模型初始化
-:label:`sec_numerical_stability`
 
 到目前为止，我们实现的每个模型都是根据某个预先指定的分布来初始化模型的参数。直到现在，我们认为初始化方案是理所当然的，忽略了如何做出这些选择的细节。你甚至可能会觉得，初始化方案的选择并不是特别重要。相反，初始化方案的选择在神经网络学习中起着非常重要的作用，它对保持数值稳定性至关重要。此外，这些选择可以与非线性激活函数的选择以有趣的方式结合在一起。我们选择哪个函数以及如何初始化参数可以决定优化算法收敛的速度有多快。糟糕选择可能会导致我们在训练时遇到梯度爆炸或梯度消失。在本节中，我们将更详细地探讨这些主题，并讨论一些有用的启发式方法。你会发现这些启发式方法在你的整个深度学习生涯中都很有用。
 
@@ -7,11 +6,11 @@
 
 考虑一个具有$L$层、输入$\mathbf{x}$和输出$\mathbf{o}$的深层网络。每一层$l$由变换$f_l$定义，该变换的参数为权重$\mathbf{W}^{(l)}$，其隐藏变量是$\mathbf{h}^{(l)}$（令 $\mathbf{h}^{(0)} = \mathbf{x}$）。我们的网络可以表示为：
 
-$$\mathbf{h}^{(l)} = f_l (\mathbf{h}^{(l-1)}) \text{ 因此 } \mathbf{o} = f_L \circ \ldots \circ f_1(\mathbf{x}).$$
+$$\mathbf{h}^{(l)} = f_l (\mathbf{h}^{(l-1)}) \text{ 因此 } \mathbf{o} = f_L \circ \ldots \circ f_1(\mathbf{x}). \tag{4.8.1}$$
 
 如果所有隐藏变量和输入都是向量，我们可以将$\mathbf{o}$关于任何一组参数$\mathbf{W}^{(l)}$的梯度写为下式：
 
-$$\partial_{\mathbf{W}^{(l)}} \mathbf{o} = \underbrace{\partial_{\mathbf{h}^{(L-1)}} \mathbf{h}^{(L)}}_{ \mathbf{M}^{(L)} \stackrel{\mathrm{def}}{=}} \cdot \ldots \cdot \underbrace{\partial_{\mathbf{h}^{(l)}} \mathbf{h}^{(l+1)}}_{ \mathbf{M}^{(l+1)} \stackrel{\mathrm{def}}{=}} \underbrace{\partial_{\mathbf{W}^{(l)}} \mathbf{h}^{(l)}}_{ \mathbf{v}^{(l)} \stackrel{\mathrm{def}}{=}}.$$
+$$\partial_{\mathbf{W}^{(l)}} \mathbf{o} = \underbrace{\partial_{\mathbf{h}^{(L-1)}} \mathbf{h}^{(L)}}_{ \mathbf{M}^{(L)} \stackrel{\mathrm{def}}{=}} \cdot \ldots \cdot \underbrace{\partial_{\mathbf{h}^{(l)}} \mathbf{h}^{(l+1)}}_{ \mathbf{M}^{(l+1)} \stackrel{\mathrm{def}}{=}} \underbrace{\partial_{\mathbf{W}^{(l)}} \mathbf{h}^{(l)}}_{ \mathbf{v}^{(l)} \stackrel{\mathrm{def}}{=}}. \tag{4.8.2}$$
 
 换言之，该梯度是$L-l$个矩阵$\mathbf{M}^{(L)} \cdot \ldots \cdot \mathbf{M}^{(l+1)}$与梯度向量 $\mathbf{v}^{(l)}$的乘积。因此，我们容易受到数值下溢问题的影响，当将太多的概率乘在一起时，这些问题经常会出现。在处理概率时，一个常见的技巧是切换到对数空间，即将数值表示的压力从尾数转移到指数。不幸的是，我们上面的问题更为严重：最初，矩阵 $\mathbf{M}^{(l)}$ 可能具有各种各样的特征值。他们可能很小，也可能很大，他们的乘积可能*非常大*，也可能*非常小*。
 
@@ -19,85 +18,36 @@ $$\partial_{\mathbf{W}^{(l)}} \mathbf{o} = \underbrace{\partial_{\mathbf{h}^{(L-
 要么是 *梯度爆炸*（gradient exploding）问题：参数更新过大，破坏了模型的稳定收敛；
 要么是 *梯度消失*（gradient vanishing）问题：参数更新过小，在每次更新时几乎不会移动，导致无法学习。
 
-### (**梯度消失**)
+### 梯度消失
 
-导致梯度消失问题的一个常见的原因是跟在每层的线性运算之后的激活函数$\sigma$。从历史上看，sigmoid函数$1/(1 + \exp(-x))$（ :numref:`sec_mlp` 提到过）很流行，因为它类似于阈值函数。由于早期的人工神经网络受到生物神经网络的启发，神经元要么完全激活要么完全不激活（就像生物神经元）的想法很有吸引力。让我们仔细看看sigmoid函数为什么会导致梯度消失。
+导致梯度消失问题的一个常见的原因是跟在每层的线性运算之后的激活函数$\sigma$。从历史上看，sigmoid函数$1/(1 + \exp(-x))$（4.1节提到过）很流行，因为它类似于阈值函数。由于早期的人工神经网络受到生物神经网络的启发，神经元要么完全激活要么完全不激活（就像生物神经元）的想法很有吸引力。让我们仔细看看sigmoid函数为什么会导致梯度消失。
 
-```{.python .input}
+```python
 %matplotlib inline
-from d2l import mxnet as d2l
-from mxnet import autograd, np, npx
-npx.set_np()
-
-x = np.arange(-8.0, 8.0, 0.1)
-x.attach_grad()
-with autograd.record():
-    y = npx.sigmoid(x)
-y.backward()
-
-d2l.plot(x, [y, x.grad], legend=['sigmoid', 'gradient'], figsize=(4.5, 2.5))
-```
-
-```{.python .input}
-#@tab pytorch
-%matplotlib inline
-from d2l import torch as d2l
-import torch
+import oneflow as flow
+from utils import *
 
 x = torch.arange(-8.0, 8.0, 0.1, requires_grad=True)
 y = torch.sigmoid(x)
 y.backward(torch.ones_like(x))
 
-d2l.plot(x.detach().numpy(), [y.detach().numpy(), x.grad.numpy()],
-         legend=['sigmoid', 'gradient'], figsize=(4.5, 2.5))
-```
-
-```{.python .input}
-#@tab tensorflow
-%matplotlib inline
-from d2l import tensorflow as d2l
-import tensorflow as tf
-
-x = tf.Variable(tf.range(-8.0, 8.0, 0.1))
-with tf.GradientTape() as t:
-    y = tf.nn.sigmoid(x)
-d2l.plot(x.numpy(), [y.numpy(), t.gradient(y, x).numpy()],
+plot(x.detach().numpy(), [y.detach().numpy(), x.grad.numpy()],
          legend=['sigmoid', 'gradient'], figsize=(4.5, 2.5))
 ```
 
 正如你所看到的，当它的输入很大或是很小时，sigmoid函数的梯度都会消失。此外，当反向传播通过许多层时，除非我们在刚刚好的地方，这些地方sigmoid函数的输入接近于零，否则整个乘积的梯度可能会消失。当我们的网络有很多层时，除非我们很小心，否则在某一层可能会切断梯度。事实上，这个问题曾经困扰着深度网络的训练。因此，更稳定（但在神经科学的角度看起来不太合理）的ReLU系列函数已经成为从业者的默认选择。
 
-### [**梯度爆炸**]
+### 梯度爆炸
 
 相反的问题，当梯度爆炸时，可能同样令人烦恼。为了更好地说明这一点，我们生成100个高斯随机矩阵，并将它们与某个初始矩阵相乘。对于我们选择的尺度（方差$\sigma^2=1$），矩阵乘积发生爆炸。当这种情况是由于深度网络的初始化所导致时，我们没有机会让梯度下降优化器收敛。
 
-```{.python .input}
-M = np.random.normal(size=(4, 4))
-print('一个矩阵 \n', M)
-for i in range(100):
-    M = np.dot(M, np.random.normal(size=(4, 4)))
-
-print('乘以100个矩阵后\n', M)
-```
-
-```{.python .input}
-#@tab pytorch
+```python
 M = torch.normal(0, 1, size=(4,4))
 print('一个矩阵 \n',M)
 for i in range(100):
     M = torch.mm(M,torch.normal(0, 1, size=(4, 4)))
 
 print('乘以100个矩阵后\n', M)
-```
-
-```{.python .input}
-#@tab tensorflow
-M = tf.random.normal((4, 4))
-print('一个矩阵 \n', M)
-for i in range(100):
-    M = tf.matmul(M, tf.random.normal((4, 4)))
-
-print('乘以100个矩阵后\n', M.numpy())
 ```
 
 ### 打破对称性
@@ -115,7 +65,6 @@ print('乘以100个矩阵后\n', M.numpy())
 在前面的部分中，例如在 :numref:`sec_linear_concise` 中，我们使用正态分布来初始化权重值。如果我们不指定初始化方法，框架将使用默认的随机初始化方法，对于中等规模的问题，这种方法通常很有效。
 
 ### Xavier初始化
-:label:`subsec_xavier`
 
 让我们看看某些*没有非线性*的全连接层输出(例如，隐藏变量)$o_{i}$的尺度分布。
 对于该层$n_\mathrm{in}$输入$x_j$及其相关权重$w_{ij}$，输出由下式给出
@@ -169,15 +118,3 @@ $$U\left(-\sqrt{\frac{6}{n_\mathrm{in} + n_\mathrm{out}}}, \sqrt{\frac{6}{n_\mat
 2. 我们是否可以将线性回归或softmax回归中的所有权重参数初始化为相同的值？
 3. 在相关资料中查找两个矩阵乘积特征值的解析界。这对确保梯度条件合适有什么启示？
 4. 如果我们知道某些项是发散的，我们能在事后修正吗？看看关于分层自适应速率缩放的论文 :cite:`You.Gitman.Ginsburg.2017` 。
-
-:begin_tab:`mxnet`
-[Discussions](https://discuss.d2l.ai/t/1819)
-:end_tab:
-
-:begin_tab:`pytorch`
-[Discussions](https://discuss.d2l.ai/t/1818)
-:end_tab:
-
-:begin_tab:`tensorflow`
-[Discussions](https://discuss.d2l.ai/t/1817)
-:end_tab:
