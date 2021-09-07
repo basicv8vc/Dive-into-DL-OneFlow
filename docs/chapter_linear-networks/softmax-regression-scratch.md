@@ -188,7 +188,7 @@ def train_epoch_ch3(net, train_iter, loss, updater):
             updater.zero_grad()
             l.backward()
             updater.step()
-            metric.add(float(l.item()) * y.shape[0], accuracy(y_hat, y), y.size().numel())
+            metric.add(float(l.item()) * y.shape[0], accuracy(y_hat, y), y.size().numel())ss
         else:
             # 使用定制的优化器和损失函数
             l.sum().backward()
