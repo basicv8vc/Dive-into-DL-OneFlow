@@ -301,3 +301,13 @@ def train_ch3(net, train_iter, test_iter, loss, num_epochs, updater):
     assert train_loss < 0.5, train_loss
     assert train_acc <= 1 and train_acc > 0.7, train_acc
     assert test_acc <= 1 and test_acc > 0.7, test_acc
+
+
+def predict_ch3(net, test_iter, n=6):
+    """预测标签（定义见第3章）。"""
+    for X, y in test_iter:
+        break
+    trues = get_fashion_mnist_labels(y)
+    preds = get_fashion_mnist_labels(flow.argmax(net(X), dim=1))
+    titles = [true + '\n' + pred for true, pred in zip(trues, preds)]
+    show_images(flow.reshape(X[0:n], (n, 28, 28)), 1, n, titles=titles[0:n])

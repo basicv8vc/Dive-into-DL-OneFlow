@@ -23,15 +23,15 @@
    * [2.7. 查阅文档](chapter_preliminaries/lookup-api.md)
 * [3. 线性神经网络](chapter_linear-networks/index.md)
   * [3.1. 线性回归](chapter_linear-networks/linear-regression.md)
-  * [3.2. 线性回归的从零开始实现](chapter_linear-networks/linear-regression-scratch.md)
+  * [3.2. 从零开始实现线性回归](chapter_linear-networks/linear-regression-scratch.md)
   * [3.3. 线性回归的简洁实现](chapter_linear-networks/linear-regression-concise.md)
   * [3.4. softmax回归](chapter_linear-networks/softmax-regression.md)
   * [3.5. 图像分类数据集](chapter_linear-networks/image-classification-dataset.md)
-  * [3.6. softmax回归的从零开始实现](chapter_linear-networks/softmax-regression-scratch.md)
+  * [3.6. 从零开始实现softmax回归](chapter_linear-networks/softmax-regression-scratch.md)
   * [3.7. softmax回归的简洁实现](chapter_linear-networks/softmax-regression-concise.md)
 * [4. 多层感知机](chapter_multilayer-perceptrons/index.md)
   * [4.1. 多层感知机](chapter_multilayer-perceptrons/mlp.md)
-
+  * [4.2. 从零开始实现多层感知机](chapter_multilayer-perceptrons/mlp-scratch.md)
 
 <!-- * 2\. 预备知识
    * [2.1 环境配置](chapter02_prerequisite/2.1_install.md)
