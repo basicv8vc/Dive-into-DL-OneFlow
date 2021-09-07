@@ -37,8 +37,7 @@
   * [4.5. 权重衰减](chapter_multilayer-perceptrons/weight-decay.md)
   * [4.6. Dropout](chapter_multilayer-perceptrons/dropout.md)
   * [4.7. 正向传播、反向传播和计算图](chapter_multilayer-perceptrons/backprop.md)
-
-  <!-- * [4.8. 数值稳定性和模型初始化](chapter_multilayer-perceptrons/numerical-stability-and-init.md) -->
+  * [4.8. 数值稳定性和模型初始化](chapter_multilayer-perceptrons/numerical-stability-and-init.md)
 
 <!-- * 2\. 预备知识
    * [2.1 环境配置](chapter02_prerequisite/2.1_install.md)
