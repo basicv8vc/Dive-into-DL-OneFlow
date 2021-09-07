@@ -30,6 +30,7 @@
   * [3.6. softmax回归的从零开始实现](chapter_linear-networks/softmax-regression-scratch.md)
   * [3.7. softmax回归的简洁实现](chapter_linear-networks/softmax-regression-concise.md)
 * [4. 多层感知机](chapter_multilayer-perceptrons/index.md)
+  * [4.1. 多层感知机](chapter_multilayer-perceptrons/mlp.md)
 
 
 <!-- * 2\. 预备知识
