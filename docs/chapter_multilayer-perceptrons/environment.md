@@ -20,15 +20,19 @@
 
 在分布偏移的分类中，协变量偏移可能是研究的最广泛的。这里我们假设，虽然输入的分布可能随时间而改变，但标签函数（即条件分布$P(y \mid \mathbf{x})$）没有改变。统计学家称之为*协变量偏移*（covariate shift），因为这个问题是由于协变量（特征）分布的变化而产生的。虽然有时我们可以在不引用因果关系的情况下对分布偏移进行推理，但我们注意到，在我们认为$\mathbf{x}$导致$y$的情况下，协变量偏移是一种自然假设。
 
-考虑一下区分猫和狗的挑战。我们的训练数据包括 :numref:`fig_cat-dog-train` 中的图像。
+考虑一下区分猫和狗的挑战。我们的训练数据包括图4.9.1中的图像。
 
-![区分猫和狗的训练数据。](../img/cat-dog-train.svg)
-:label:`fig_cat-dog-train`
+<div align=center>
+<img width=800 src="../img/cat-dog-train.svg"/>
+</div>
+<center>图4.9.1 区分猫和狗的训练数据。</center>
 
-在测试时，我们被要求对 :numref:`fig_cat-dog-test` 中的图像进行分类。
+在测试时，我们被要求对图4.9.2中的图像进行分类。
 
-![区分猫和狗的测试数据。](../img/cat-dog-test.svg)
-:label:`fig_cat-dog-test`
+<div align=center>
+<img width=800 src="../img/cat-dog-test.svg"/>
+</div>
+<center>图4.9.2 区分猫和狗的测试数据。</center>
 
 训练集由真实照片组成，而测试集只包含卡通图片。在一个与测试集的特征有着本质不同的数据集上进行训练，如果没有一个计划来适应新的领域，可能会带来麻烦。
 
@@ -39,11 +43,13 @@
 
 ### 概念偏移
 
-我们也可能会遇到*概念偏移*的相关问题，当标签的定义发生变化时，就会出现这种问题。这听起来很奇怪——一只猫就是一只猫，不是吗？然而，其他类别会随着不同时间的用法而发生变化。精神疾病的诊断标准，所谓的时髦，以及工作头衔，都受到相当大的概念偏移的影响。事实证明，如果我们环游美国，根据所在的地理位置改变我们的数据来源，我们会发现关于“软饮”名称的分布发生了相当大的概念偏移，如 :numref:`fig_popvssoda` 所示。
+我们也可能会遇到*概念偏移*的相关问题，当标签的定义发生变化时，就会出现这种问题。这听起来很奇怪——一只猫就是一只猫，不是吗？然而，其他类别会随着不同时间的用法而发生变化。精神疾病的诊断标准，所谓的时髦，以及工作头衔，都受到相当大的概念偏移的影响。事实证明，如果我们环游美国，根据所在的地理位置改变我们的数据来源，我们会发现关于“软饮”名称的分布发生了相当大的概念偏移，如图4.9.3所示。
 
-![美国软饮名称的概念偏移。](../img/popvssoda.png)
-:width:`400px`
-:label:`fig_popvssoda`
+<div align=center>
+<img width=500 src="../img/popvssoda.png"/>
+</div>
+<center>图4.9.3 美国软饮名称的概念偏移。</center>
+
 
 如果我们要建立一个机器翻译系统，$P(y \mid \mathbf{x})$的分布可能会因我们的位置不同而有所不同。这个问题可能很难发现。我们希望利用在时间或空间上仅仅逐渐发生偏移的知识。
 
@@ -87,20 +93,17 @@
 
 让我们首先反思一下在模型训练期间到底发生了什么：我们迭代训练数据$\{(\mathbf{x}_1, y_1), \ldots, (\mathbf{x}_n, y_n)\}$的特征和相关的标签，并在每一个小批量之后更新模型$f$的参数。为了简单起见，我们不考虑正则化，因此我们在极大地降低了训练损失：
 
-$$\mathop{\mathrm{minimize}}_f \frac{1}{n} \sum_{i=1}^n l(f(\mathbf{x}_i), y_i),$$
-:eqlabel:`eq_empirical-risk-min`
+$$\mathop{\mathrm{minimize}}_f \frac{1}{n} \sum_{i=1}^n l(f(\mathbf{x}_i), y_i), \tag{4.9.1}$$
 
-其中$l$是损失函数，用来度量给定响应标签$y_i$，预测$f(\mathbf{x}_i)$的“糟糕程度”。统计学家称 :eqref:`eq_empirical-risk-min` 中的这一项为经验风险。
+其中$l$是损失函数，用来度量给定响应标签$y_i$，预测$f(\mathbf{x}_i)$的“糟糕程度”。统计学家称（4.9.1）中的这一项为经验风险。
 *经验风险* （empirical risk）是
 为了近似 *真实风险*（true risk），整个训练数据上的平均损失，即从其真实分布$p(\mathbf{x},y)$中抽取的所有数据的总体损失的期望值：
 
-$$E_{p(\mathbf{x}, y)} [l(f(\mathbf{x}), y)] = \int\int l(f(\mathbf{x}), y) p(\mathbf{x}, y) \;d\mathbf{x}dy.$$
-:eqlabel:`eq_true-risk`
+$$E_{p(\mathbf{x}, y)} [l(f(\mathbf{x}), y)] = \int\int l(f(\mathbf{x}), y) p(\mathbf{x}, y) \;d\mathbf{x}dy. \tag{4.9.2}$$
 
-然而，在实践中，我们通常无法获得数据的总体。因此，*经验风险最小化*即在 :eqref:`eq_empirical-risk-min` 中最小化经验风险，是一种实用的机器学习策略，希望能近似最小化真实风险。
+然而，在实践中，我们通常无法获得数据的总体。因此，*经验风险最小化*即在（4.9.1）中最小化经验风险，是一种实用的机器学习策略，希望能近似最小化真实风险。
 
 ### 协变量偏移纠正
-:label:`subsec_covariate-shift-correction`
 
 假设我们要估计一些依赖关系$P(y \mid \mathbf{x})$，我们有了带有标签的数据$(\mathbf{x}_i, y_i)$。不幸的是，观测值$\mathbf{x}_i$是从某些*源分布*$q(\mathbf{x})$中得出的，而不是从*目标分布*$p(\mathbf{x})$中得出的。幸运的是，依赖性假设意味着条件分布保持不变：$p(y \mid \mathbf{x}) = q(y \mid \mathbf{x})$。如果源分布$q(\mathbf{x})$是“错误的”，我们可以通过在真实风险的计算中使用以下简单的恒等式来进行纠正：
 
@@ -109,56 +112,57 @@ $$
 \int\int l(f(\mathbf{x}), y) p(y \mid \mathbf{x})p(\mathbf{x}) \;d\mathbf{x}dy =
 \int\int l(f(\mathbf{x}), y) q(y \mid \mathbf{x})q(\mathbf{x})\frac{p(\mathbf{x})}{q(\mathbf{x})} \;d\mathbf{x}dy.
 \end{aligned}
+\tag{4.9.3}
 $$
 
 换句话说，我们需要根据数据来自正确分布与来自错误分布的概率之比来重新衡量每个数据样本的权重：
 
-$$\beta_i \stackrel{\mathrm{def}}{=} \frac{p(\mathbf{x}_i)}{q(\mathbf{x}_i)}.$$
+$$\beta_i \stackrel{\mathrm{def}}{=} \frac{p(\mathbf{x}_i)}{q(\mathbf{x}_i)}. \tag{4.9.4}$$
 
 将权重$\beta_i$代入到每个数据样本$(\mathbf{x}_i, y_i)$中，我们可以使用”加权经验风险最小化“来训练模型：
 
-$$\mathop{\mathrm{minimize}}_f \frac{1}{n} \sum_{i=1}^n \beta_i l(f(\mathbf{x}_i), y_i).$$
-:eqlabel:`eq_weighted-empirical-risk-min`
+$$\mathop{\mathrm{minimize}}_f \frac{1}{n} \sum_{i=1}^n \beta_i l(f(\mathbf{x}_i), y_i). \tag{4.9.5}$$
 
 同样，我们不知道这个比率，所以在我们可以做任何有用的事情之前，我们需要估计它。有许多方法都可以用，包括一些花哨的算子理论方法，试图直接使用最小范数或最大熵原理重新校准期望算子。需要注意的是，对于任意一种这样的方法，我们都需要从全部两个分布中抽取样本：“真实”的分布$p$，通过访问测试数据获取，和用于生成训练集$q$的分布（后者很容易获得）。但是请注意，我们只需要特征$\mathbf{x} \sim p(\mathbf{x})$；我们不需要访问标签$y \sim p(y)$。
 
-在这种情况下，有一种非常有效的方法可以得到几乎与原始方法一样好的结果：logistic回归，这是用于二元分类的softmax回归（见 :numref:`sec_softmax` ）的一个特例。这就是计算估计的概率比所需的全部内容。我们学习了一个分类器来区分从$p(\mathbf{x})$抽取的数据和从$q(\mathbf{x})$抽取的数据。如果无法区分这两个分布，则意味着想相关的样本同样可能来自这两个分布中的任何一个。另一方面，任何可以很好区分的样本都应该相应地显著增加或减少权重。
+在这种情况下，有一种非常有效的方法可以得到几乎与原始方法一样好的结果：logistic回归，这是用于二元分类的softmax回归（见3.4节）的一个特例。这就是计算估计的概率比所需的全部内容。我们学习了一个分类器来区分从$p(\mathbf{x})$抽取的数据和从$q(\mathbf{x})$抽取的数据。如果无法区分这两个分布，则意味着想相关的样本同样可能来自这两个分布中的任何一个。另一方面，任何可以很好区分的样本都应该相应地显著增加或减少权重。
 
 为了简单起见，假设我们分别从$p(\mathbf{x})$和$q(\mathbf{x})$两个分布中拥有相同数量的样本。现在用$z$标签表示从$p$抽取的数据为$1$，从$q$抽取的数据为$-1$。然后，混合数据集中的概率由下式给出
 
-$$P(z=1 \mid \mathbf{x}) = \frac{p(\mathbf{x})}{p(\mathbf{x})+q(\mathbf{x})} \text{ and hence } \frac{P(z=1 \mid \mathbf{x})}{P(z=-1 \mid \mathbf{x})} = \frac{p(\mathbf{x})}{q(\mathbf{x})}.$$
+$$P(z=1 \mid \mathbf{x}) = \frac{p(\mathbf{x})}{p(\mathbf{x})+q(\mathbf{x})} \text{ and hence } \frac{P(z=1 \mid \mathbf{x})}{P(z=-1 \mid \mathbf{x})} = \frac{p(\mathbf{x})}{q(\mathbf{x})}. \tag{4.9.6}$$
 
 因此，如果我们使用logistic回归方法，其中$P(z=1 \mid \mathbf{x})=\frac{1}{1+\exp(-h(\mathbf{x}))}$（$h$是一个参数化函数），则很自然有：
 
 $$
-\beta_i = \frac{1/(1 + \exp(-h(\mathbf{x}_i)))}{\exp(-h(\mathbf{x}_i))/(1 + \exp(-h(\mathbf{x}_i)))} = \exp(h(\mathbf{x}_i)).
+\beta_i = \frac{1/(1 + \exp(-h(\mathbf{x}_i)))}{\exp(-h(\mathbf{x}_i))/(1 + \exp(-h(\mathbf{x}_i)))} = \exp(h(\mathbf{x}_i)). \tag{4.9.7}
 $$
 
-因此，我们需要解决两个问题：第一个问题是区分来自两个分布的数据，然后是 :eqref:`eq_weighted-empirical-risk-min` 中的加权经验风险最小化问题，在这个问题中，我们将对其中的项加权$\beta_i$。
+因此，我们需要解决两个问题：第一个问题是区分来自两个分布的数据，然后是（4.9.5）中的加权经验风险最小化问题，在这个问题中，我们将对其中的项加权$\beta_i$。
 
 现在我们准备描述一个纠正算法。假设我们有一个训练集$\{(\mathbf{x}_1, y_1), \ldots, (\mathbf{x}_n, y_n)\}$和一个未标记的测试集$\{\mathbf{u}_1, \ldots, \mathbf{u}_m\}$。对于协变量偏移，我们假设$1 \leq i \leq n$的$\mathbf{x}_i$来自某个源分布，$\mathbf{u}_i$来自目标分布。以下是纠正协变量偏移的典型算法：
 
 1. 生成一个二元分类训练集：$\{(\mathbf{x}_1, -1), \ldots, (\mathbf{x}_n, -1), (\mathbf{u}_1, 1), \ldots, (\mathbf{u}_m, 1)\}$。
-1. 用logistic回归训练二元分类器得到函数$h$。
-1. 使用$\beta_i = \exp(h(\mathbf{x}_i))$或更好的$\beta_i = \min(\exp(h(\mathbf{x}_i)), c)$（$c$为常量）对训练数据进行加权。
-1. 使用权重$\beta_i$进行 :eqref:`eq_weighted-empirical-risk-min` 中$\{(\mathbf{x}_1, y_1), \ldots, (\mathbf{x}_n, y_n)\}$的训练。
+2. 用logistic回归训练二元分类器得到函数$h$。
+3. 使用$\beta_i = \exp(h(\mathbf{x}_i))$或更好的$\beta_i = \min(\exp(h(\mathbf{x}_i)), c)$（$c$为常量）对训练数据进行加权。
+4. 使用权重$\beta_i$进行（4.9.5）中$\{(\mathbf{x}_1, y_1), \ldots, (\mathbf{x}_n, y_n)\}$的训练。
 
 请注意，上述算法依赖于一个重要的假设。为了使该方案起作用，我们需要目标分布(例如，测试分布)中的每个数据样本在训练时出现的概率非零。如果我们找到$p(\mathbf{x}) > 0$但$q(\mathbf{x}) = 0$的点，那么相应的重要性权重应该是无穷大。
 
 ### 标签偏移纠正
 
-假设我们处理的是$k$个类别的分类任务。使用 :numref:`subsec_covariate-shift-correction` 中相同符号，$q$和$p$中分别是源分布（例如训练时）和目标分布（例如测试时的分布）。假设标签的分布随时间变化：$q(y) \neq p(y)$，但类别条件分布保持不变：$q(\mathbf{x} \mid y)=p(\mathbf{x} \mid y)$。如果源分布$q(y)$是“错误的”，我们可以根据 :eqref:`eq_true-risk` 中定义的真实风险中的如下恒等式进行更正：
+假设我们处理的是$k$个类别的分类任务。使用4.9.3.2节中相同符号，$q$和$p$中分别是源分布（例如训练时）和目标分布（例如测试时的分布）。假设标签的分布随时间变化：$q(y) \neq p(y)$，但类别条件分布保持不变：$q(\mathbf{x} \mid y)=p(\mathbf{x} \mid y)$。如果源分布$q(y)$是“错误的”，我们可以根据（4.9.2）中定义的真实风险中的如下恒等式进行更正：
 
 $$
 \begin{aligned}
 \int\int l(f(\mathbf{x}), y) p(\mathbf{x} \mid y)p(y) \;d\mathbf{x}dy =
 \int\int l(f(\mathbf{x}), y) q(\mathbf{x} \mid y)q(y)\frac{p(y)}{q(y)} \;d\mathbf{x}dy.
 \end{aligned}
+\tag{4.9.8}
 $$
 
 这里，我们的重要性权重将对应于标签似然比率
 
-$$\beta_i \stackrel{\mathrm{def}}{=} \frac{p(y_i)}{q(y_i)}.$$
+$$\beta_i \stackrel{\mathrm{def}}{=} \frac{p(y_i)}{q(y_i)}. \tag{4.9.9}$$
 
 标签偏移的一个好处是，如果我们在源分布上有一个相当好的模型，那么我们可以得到对这些权重的一致估计，而不需要处理周边的其他维度。在深度学习中，输入往往是高维对象，如图像，而标签通常是更简单的对象，如类别。
 
@@ -168,11 +172,11 @@ $$\beta_i \stackrel{\mathrm{def}}{=} \frac{p(y_i)}{q(y_i)}.$$
 
 结果表明，在一些温和的条件下——如果我们的分类器一开始就相当准确，如果目标数据只包含我们以前见过的类别，以及如果标签偏移假设成立（这是这里最强的假设），然后我们可以通过求解一个简单的线性系统来估计测试集的标签分布
 
-$$\mathbf{C} p(\mathbf{y}) = \mu(\hat{\mathbf{y}}),$$
+$$\mathbf{C} p(\mathbf{y}) = \mu(\hat{\mathbf{y}}),\tag{4.9.10}$$
 
 因为作为一个估计，$\sum_{j=1}^k c_{ij} p(y_j) = \mu(\hat{y}_i)$对所有$1 \leq i \leq k$成立，其中$p(y_j)$是$k$维标签分布向量$p(\mathbf{y})$的第$j^\mathrm{th}$元素。如果我们的分类器一开始就足够精确，那么混淆矩阵$\mathbf{C}$将是可逆的，进而我们可以得到一个解$p(\mathbf{y}) = \mathbf{C}^{-1} \mu(\hat{\mathbf{y}})$。
 
-因为我们观测源数据上的标签，所以很容易估计分布$q(y)$。那么对于标签为$y_i$的任何训练样本$i$，我们可以使用我们估计的$p(y_i)/q(y_i)$比率来计算权重$\beta_i$，并将其代入 :eqref:`eq_weighted-empirical-risk-min` 中的加权经验风险最小化中。
+因为我们观测源数据上的标签，所以很容易估计分布$q(y)$。那么对于标签为$y_i$的任何训练样本$i$，我们可以使用我们估计的$p(y_i)/q(y_i)$比率来计算权重$\beta_i$，并将其代入（4.9.5）中的加权经验风险最小化中。
 
 ### 概念偏移纠正
 
@@ -203,6 +207,7 @@ $$
 \mathrm{observation} ~ y_t \longrightarrow
 \mathrm{loss} ~ l(y_t, f_t(\mathbf{x}_t)) \longrightarrow
 \mathrm{model} ~ f_{t+1}
+\tag{4.9.11}
 $$
 
 ### 老虎机
@@ -211,7 +216,7 @@ $$
 
 ### 控制
 
-在很多情况下，环境会记住我们所做的。不一定是以一种对抗的方式，但它会记住，而且它的反应将取决于之前发生的事情。例如，咖啡锅炉控制器将根据之前是否加热锅炉来观测到不同的温度。PID（比例—积分—微分）控制器算法是一个流行的选择。同样，用户在新闻网站上的行为也将取决于我们之前向他展示的内容（例如，大多数新闻他只阅读一次）。许多这样的算法形成了一个环境模型，在这个模型中，他们的行为使得他们的决策看起来不那么随机。近年来，控制理论（如PID的变体）也被用于自动调整超参数，以获得更好的解构和重建质量，提高生成文本的多样性和生成图像的重建质量 :cite:`Shao.Yao.Sun.ea.2020` 。
+在很多情况下，环境会记住我们所做的。不一定是以一种对抗的方式，但它会记住，而且它的反应将取决于之前发生的事情。例如，咖啡锅炉控制器将根据之前是否加热锅炉来观测到不同的温度。PID（比例—积分—微分）控制器算法是一个流行的选择。同样，用户在新闻网站上的行为也将取决于我们之前向他展示的内容（例如，大多数新闻他只阅读一次）。许多这样的算法形成了一个环境模型，在这个模型中，他们的行为使得他们的决策看起来不那么随机。近年来，控制理论（如PID的变体）也被用于自动调整超参数，以获得更好的解构和重建质量，提高生成文本的多样性和生成图像的重建质量[1]。
 
 ### 强化学习
 
@@ -248,4 +253,7 @@ $$
 3. 实现协变量偏移纠正。
 4. 除了分布偏移，还有什么会影响经验风险接近真实风险的程度？
 
-[Discussions](https://discuss.d2l.ai/t/1822)
+参考文献
+
+[1] Shao, H., Yao, S., Sun, D., Zhang, A., Liu, S., Liu, D., … Abdelzaher, T. (2020). Controlvae: controllable variational autoencoder. Proceedings of the 37th International Conference on Machine Learning.
+
