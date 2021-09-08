@@ -43,6 +43,9 @@
 * [5. 深度学习计算](chapter_deep-learning-computation/index.md)
   * [5.1. 层和块](chapter_deep-learning-computation/model-construction.md)
   * [5.2. 参数管理](chapter_deep-learning-computation/parameters.md)
+  * [5.4. 自定义层](chapter_deep-learning-computation/custom-layer.md)
+  
+  <!-- * [5.3. 延后初始化](chapter_deep-learning-computation/deferred-init.md) -->
 
 <!-- * 2\. 预备知识
    * [2.1 环境配置](chapter02_prerequisite/2.1_install.md)
