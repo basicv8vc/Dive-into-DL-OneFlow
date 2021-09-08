@@ -42,6 +42,7 @@
   * [4.10. 实战 Kaggle 比赛：预测房价](chapter_multilayer-perceptrons/kaggle-house-price.md)
 * [5. 深度学习计算](chapter_deep-learning-computation/index.md)
   * [5.1. 层和块](chapter_deep-learning-computation/model-construction.md)
+  * [5.2. 参数管理](chapter_deep-learning-computation/parameters.md)
 
 <!-- * 2\. 预备知识
    * [2.1 环境配置](chapter02_prerequisite/2.1_install.md)
