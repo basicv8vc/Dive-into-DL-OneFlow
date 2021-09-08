@@ -3,7 +3,7 @@
 </div>
 
 **注意** 
-* 由于OneFlow仍处于快速开发阶段，目前本项目使用的是nightly版本，API未必和接下来正式发布的v0.5.0完全兼容，暂不建议大家跟进此项目，待v0.5.0发布后，本项目代码会做全面迁移
+* 由于[OneFlow](https://github.com/Oneflow-Inc/oneflow)仍处于快速开发阶段，目前本项目使用的是nightly版本，API未必和接下来正式发布的v0.5.0完全兼容，暂不建议大家跟进此项目，待v0.5.0发布后，本项目代码会做全面迁移
 * 《动手学深度学习》有两个版本，本项目是基于最新版（第二版），该版本更贴近英文版\<Dive into Deep Learning\>
 * TODO List
   * markdown优先，其中包含的代码都经过本地测试
@@ -11,7 +11,7 @@
   * 创建jupyter notebook，放在colab平台进行托管，无须下载代码即可执行，学习效率更高
 
 
-本项目将[《动手学深度学习》第二版](https://zh-v2.d2l.ai/) 中MXNet/PyTorch代码替换为OneFlow。原书作者：阿斯顿·张、李沐、扎卡里 C. 立顿、亚历山大 J. 斯莫拉以及其他社区贡献者，GitHub地址：https://github.com/d2l-ai/d2l-zh
+本项目将[《动手学深度学习》第二版](https://zh-v2.d2l.ai/) 中MXNet/PyTorch代码替换为[OneFlow](https://github.com/Oneflow-Inc/oneflow)。原书作者：阿斯顿·张、李沐、扎卡里 C. 立顿、亚历山大 J. 斯莫拉以及其他社区贡献者，GitHub地址：https://github.com/d2l-ai/d2l-zh
 
 另外，本项目也参考了[Dive-into-DL-PyTorch](https://github.com/ShusenTang/Dive-into-DL-PyTorch)和[Dive-into-DL-TensorFlow2.0](https://github.com/TrickyGo/Dive-into-DL-TensorFlow2.0)，在此表示感谢。
 
