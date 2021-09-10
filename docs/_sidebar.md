@@ -46,6 +46,8 @@
   * [5.4. 自定义层](chapter_deep-learning-computation/custom-layer.md)
   * [5.5. 读写文件](chapter_deep-learning-computation/read-write.md)
   * [5.6. GPU](chapter_deep-learning-computation/use-gpu.md)
+* [6. 卷积神经网络](chapter_convolutional-neural-networks/index.md)
+* 
   
   <!-- * [5.3. 延后初始化](chapter_deep-learning-computation/deferred-init.md) -->
 
