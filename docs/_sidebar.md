@@ -52,6 +52,7 @@
   * [6.3. 填充和步幅](chapter_convolutional-neural-networks/padding-and-strides.md)
   * [6.4. 多输入多输出通道](chapter_convolutional-neural-networks/channels.md)
   * [6.5. 汇聚层](chapter_convolutional-neural-networks/pooling.md)
+  * [6.6. 卷积神经网络（LeNet）](chapter_convolutional-neural-networks/lenet.md)
   
   <!-- * [5.3. 延后初始化](chapter_deep-learning-computation/deferred-init.md) -->
 

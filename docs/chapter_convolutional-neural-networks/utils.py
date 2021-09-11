@@ -197,7 +197,8 @@ class Accumulator:
         self.data = [0.0] * n
 
     def add(self, *args):
-        self.data = [a + float(b) for a, b in zip(self.data, args)]
+        args_float = [item.item() if isinstance(item, flow.Tensor) else item for item in args]
+        self.data = [a + float(b) for a, b in zip(self.data, args_float)]
 
     def reset(self):
         self.data = [0.0] * len(self.data)
@@ -347,3 +348,9 @@ def corr2d(X, K):
         for j in range(Y.shape[1]):
             Y[i, j] = (X[i:i + h, j:j + w] * K).sum()
     return Y
+
+def try_gpu(i=0):
+    """如果存在，则返回gpu(i)，否则返回cpu()。"""
+    if flow.cuda.device_count() >= i + 1:
+        return flow.device(f'cuda:{i}')
+    return flow.device('cpu')

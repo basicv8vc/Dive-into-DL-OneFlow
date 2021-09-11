@@ -65,7 +65,7 @@ flow.cuda.device_count()
 
 现在我们定义了两个方便的函数，这两个函数允许我们在请求的GPU不存在的情况下运行代码。
 
-```{.python .input}
+```python
 def try_gpu(i=0):
     """如果存在，则返回gpu(i)，否则返回cpu()。"""
     if flow.cuda.device_count() >= i + 1:
