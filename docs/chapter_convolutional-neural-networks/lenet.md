@@ -184,6 +184,9 @@ train_ch6(net, train_iter, test_iter, num_epochs, lr, try_gpu())
     loss 0.460, train acc 0.828, test acc 0.820
     50607.4 examples/sec on cuda:0
 
+<div align=center>
+<img width=400 src="../img/lenet_loss_acc.png"/>
+</div>
 
 ## 6.6.3. 小结
 
