@@ -50,6 +50,7 @@
   * [6.1. 从全连接层到卷积](chapter_convolutional-neural-networks/why-conv.md)
   * [6.2. 图像卷积](chapter_convolutional-neural-networks/conv-layer.md)
   * [6.3. 填充和步幅](chapter_convolutional-neural-networks/padding-and-strides.md)
+  * [6.4. 多输入多输出通道](chapter_convolutional-neural-networks/channels.md)
   
   <!-- * [5.3. 延后初始化](chapter_deep-learning-computation/deferred-init.md) -->
 
