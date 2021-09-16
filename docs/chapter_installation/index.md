@@ -62,12 +62,12 @@ git clone https://github.com/basicv8vc/Dive-into-DL-OneFlow
 安装GPU版OneFlow
 
 ```bash
-python -m pip install oneflow -f https://staging.oneflow.info/branch/master/cu102
+python -m pip install -f https://release.oneflow.info oneflow==0.5rc1+cu102
 ```
 当然也可以安装CPU版OneFlow或其他CUDA版本：
 
 ```
-python -m pip install oneflow -f https://staging.oneflow.info/branch/master/[PLATFORM]
+python -m pip install --find-links https://release.oneflow.info oneflow==0.5rc1+[PLATFORM]
 ```
 
 合理的`[PLATFORM]`字段如下表中第一列:

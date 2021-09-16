@@ -33,7 +33,7 @@ x
 ```python
 x.shape
 ```
-    flow.Size([12])
+    oneflow.Size([12])
 
 
 如果只想知道张量中元素的总数，即形状的所有元素乘积，可以使用numel函数

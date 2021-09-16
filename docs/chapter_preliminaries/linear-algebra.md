@@ -59,7 +59,7 @@ x[3]
 ```python
 x.shape
 ```
-    flow.Size([4])
+    oneflow.Size([4])
 
 请注意，*维度*（dimension）这个词在不同上下文时往往会有不同的含义，这经常会使人感到困惑。为了清楚起见，我们在此明确一下。*向量*或*轴*的维度被用来表示*向量*或*轴*的长度，即向量或轴的元素数量。然而，张量的维度用来表示张量具有的轴数。在这个意义上，张量的某个轴的维数就是这个轴的长度。
 
@@ -207,7 +207,7 @@ a + X, (a * X).shape
             [[14, 15, 16, 17],
             [18, 19, 20, 21],
             [22, 23, 24, 25]]], dtype=oneflow.int64),
-    flow.Size([2, 3, 4])
+    oneflow.Size([2, 3, 4])
 
 ## 2.3.6. 降维
 
@@ -228,7 +228,7 @@ x, x.sum()
 ```python
 A.shape, A.sum()
 ```
-    flow.Size([5, 4]), tensor(190., dtype=oneflow.float32)
+    oneflow.Size([5, 4]), tensor(190., dtype=oneflow.float32)
 
 默认情况下，调用求和函数会沿所有的轴降低张量的维度，使它变为一个标量。
 我们还可以**指定张量沿哪一个轴来通过求和降低维度**。以矩阵为例，为了通过求和所有行的元素来降维（轴0），我们可以在调用函数时指定`dim=0`。
@@ -239,7 +239,7 @@ A.shape, A.sum()
 A_sum_axis0 = A.sum(dim=0)
 A_sum_axis0, A_sum_axis0.shape
 ```
-    tensor([40., 45., 50., 55.], dtype=oneflow.float32), flow.Size([4])
+    tensor([40., 45., 50., 55.], dtype=oneflow.float32), oneflow.Size([4])
 
 指定`dim=1`将通过汇总所有列的元素降维（轴1）。因此，输入的轴1的维数在输出形状中消失。
 
@@ -247,7 +247,7 @@ A_sum_axis0, A_sum_axis0.shape
 A_sum_axis1 = A.sum(dim=1)
 A_sum_axis1, A_sum_axis1.shape
 ```
-    tensor([ 6., 22., 38., 54., 70.], dtype=oneflow.float32), flow.Size([5])
+    tensor([ 6., 22., 38., 54., 70.], dtype=oneflow.float32), oneflow.Size([5])
 
 沿着行和列对矩阵求和，等价于对矩阵的所有元素进行求和。
 
@@ -376,8 +376,8 @@ $$
 ```python
 A.shape, x.shape, flow.matmul(A, x.reshape(4, 1)).reshape(-1)
 ```
-    flow.Size([5, 4]),
-    flow.Size([4]),
+    oneflow.Size([5, 4]),
+    oneflow.Size([4]),
     tensor([ 14.,  38.,  62.,  86., 110.], dtype=oneflow.float32)
 
 

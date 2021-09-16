@@ -3,7 +3,8 @@
 </div>
 
 **注意** 
-* 由于[OneFlow](https://github.com/Oneflow-Inc/oneflow)仍处于快速开发阶段，目前本项目使用的是nightly版本，API未必和接下来正式发布的v0.5.0完全兼容，暂不建议大家跟进此项目，待v0.5.0发布后，本项目代码会做全面迁移
+* 由于[OneFlow](https://github.com/Oneflow-Inc/oneflow)仍处于快速开发阶段，目前本项目使用的是0.5rc1版本，待0.5版正式发布后，本项目代码会做全面迁移
+
 * 《动手学深度学习》有两个版本，本项目是基于最新版（第二版），该版本更贴近英文版\<Dive into Deep Learning\>
 * TODO List
   * markdown优先，其中包含的代码都经过本地测试
