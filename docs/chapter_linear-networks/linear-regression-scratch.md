@@ -9,15 +9,12 @@
 ```python
 %matplotlib inline
 import oneflow as flow
-import random
 import matplotlib.pyplot as plt
 import numpy as np
 from utils import *
 # 设置随机数种子，复现结果
-random.seed(123)
-np.random.seed(123)
-generator = flow.Generator()
-generator.manual_seed(123)
+rng = np.random.default_rng(123)
+flow.manual_seed(123)
 ```
 
 ## 3.2.1. 生成数据集
@@ -37,10 +34,10 @@ $$\mathbf{y}= \mathbf{X} \mathbf{w} + b + \mathbf\epsilon. \tag{3.2.1}$$
 ```python
 def synthetic_data(w, b, num_examples):
     """生成 y = Xw + b + 噪声。"""
-    X = flow.randn(num_examples, w.shape[0], generator=generator)
+    X = flow.randn(num_examples, w.shape[0])
     y = flow.matmul(X, w.reshape(w.shape[0], -1)) + b
     y = y.reshape(-1)
-    y += flow.tensor(np.random.normal(0, 0.01, y.shape[0]).astype(np.float32))
+    y += flow.tensor(rng.normal(0, 0.01, y.shape[0]).astype(np.float32))
     return X, flow.reshape(y, (-1, 1))
 
 true_w = flow.tensor([2, -3.4])
@@ -54,7 +51,7 @@ features, labels = synthetic_data(true_w, true_b, 1000)
 print('features:', features[0],'\nlabel:', labels[0])
 ```
     features: tensor([1.0858, 1.0017], dtype=oneflow.float32) 
-    label: tensor([2.9548], dtype=oneflow.float32)
+    label: tensor([2.9558], dtype=oneflow.float32)
 
 通过生成第二个特征`features[:, 1]`和`labels`的散点图，可以直观地观察到两者之间的线性关系。
 
@@ -64,7 +61,7 @@ plt.scatter(features[:, 1].numpy(), labels.numpy(), 1);
 ```
 
 <div align=center>
-<img src="../img/output_linear-regression-scratch_58de05_42_0.svg"/>
+<img src="../img/output_linear-regression-scratch_58de05_42_0.png"/>
 </div>
 <center> (此图待更新)</center>
 
@@ -81,11 +78,12 @@ def data_iter(batch_size, features, labels):
     num_examples = features.shape[0]
     indices = list(range(num_examples))
     # 这些样本是随机读取的，没有特定的顺序
-    random.shuffle(indices)
+    rng.shuffle(indices)
     for i in range(0, num_examples, batch_size):
         batch_indices = flow.tensor(
             indices[i: min(i + batch_size, num_examples)])
         yield features[batch_indices], labels[batch_indices]
+
 ```
 
 通常，我们使用合理大小的小批量来利用GPU硬件的优势，因为GPU在并行处理方面表现出色。每个样本都可以并行地进行模型计算，且每个样本损失函数的梯度也可以被并行地计算，GPU可以在处理几百个样本时，所花费的时间不比处理一个样本时多太多。
@@ -100,26 +98,26 @@ for X, y in data_iter(batch_size, features, labels):
     print(X, '\n', y)
     break
 ```
-    tensor([[ 0.7830,  0.1374],
-            [-0.0962, -1.3425],
-            [-0.3443, -0.6884],
-            [-0.1926,  0.7281],
-            [-0.7138, -1.0779],
-            [ 0.5671, -0.3088],
-            [ 1.0604, -1.4812],
-            [ 1.7058,  0.9796],
-            [-1.3980, -1.3144],
-            [ 1.8905,  0.4672]], dtype=oneflow.float32) 
-    tensor([[ 5.2951],
-            [ 8.5674],
-            [ 5.8428],
-            [ 1.3432],
-            [ 6.4363],
-            [ 6.3911],
-            [11.3462],
-            [ 4.2735],
-            [ 5.8742],
-            [ 6.3939]], dtype=oneflow.float32)
+    tensor([[-0.1163,  0.3029],
+            [-0.9269, -0.1961],
+            [ 0.3706,  2.9210],
+            [-1.9093,  1.7759],
+            [ 0.7561,  0.4099],
+            [-0.2684, -2.5004],
+            [ 0.7559,  1.3650],
+            [ 0.0679,  0.5988],
+            [-0.3295,  0.3749],
+            [ 1.3654,  1.8469]], dtype=oneflow.float32) 
+    tensor([[ 2.9275],
+            [ 3.0216],
+            [-4.9945],
+            [-5.6528],
+            [ 4.3061],
+            [12.1675],
+            [ 1.0722],
+            [ 2.2831],
+            [ 2.2687],
+            [ 0.6475]], dtype=oneflow.float32)
 
 当我们运行迭代时，我们会连续地获得不同的小批量，直至遍历完整个数据集。
 上面实现的迭代对于教学来说很好，但它的执行效率很低，可能会在实际问题上陷入麻烦。
@@ -132,7 +130,7 @@ for X, y in data_iter(batch_size, features, labels):
 在下面的代码中，我们通过从均值为0、标准差为0.01的正态分布中采样随机数来初始化权重，并将偏置初始化为0。
 
 ```python
-w = flow.tensor(np.random.normal(0, 0.01, (2, 1)).astype(np.float32), requires_grad=True)
+w = flow.tensor(rng.normal(0, 0.01, (2, 1)).astype(np.float32), requires_grad=True)
 b = flow.zeros(1, requires_grad=True)
 ```
 
@@ -215,9 +213,9 @@ for epoch in range(num_epochs):
         train_l = loss(net(features, w, b), labels)
         print(f'epoch {epoch + 1}, loss {float(train_l.mean().item()):f}')
 ```
-    epoch 1, loss 0.029298
-    epoch 2, loss 0.000101
-    epoch 3, loss 0.000050
+    epoch 1, loss 0.028921
+    epoch 2, loss 0.000102
+    epoch 3, loss 0.000051
 
 因为我们使用的是自己合成的数据集，所以我们知道真正的参数是什么。
 因此，我们可以通过比较真实参数和通过训练学到的参数来评估训练的成功程度。事实上，真实参数和通过训练学到的参数确实非常接近。
@@ -226,9 +224,9 @@ for epoch in range(num_epochs):
 print(f'w的估计误差: {true_w - flow.reshape(w, true_w.shape)}')
 print(f'b的估计误差: {true_b - b}')
 ```
-    w的估计误差: tensor([ 0.0006, -0.0006], dtype=oneflow.float32,
+    w的估计误差: tensor([ 0.0012, -0.0009], dtype=oneflow.float32,
        grad_fn=<broadcast_sub_backward>)
-    b的估计误差: tensor([0.0007], dtype=oneflow.float32, grad_fn=<scalar_add_backward>)
+    b的估计误差: tensor([0.0004], dtype=oneflow.float32, grad_fn=<scalar_add_backward>)
 
 注意，我们不应该想当然地认为我们能够完美地恢复参数。
 在机器学习中，我们通常不太关心恢复真正的参数，而更关心那些能高度准确预测的参数。

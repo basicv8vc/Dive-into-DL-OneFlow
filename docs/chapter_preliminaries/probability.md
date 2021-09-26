@@ -34,9 +34,12 @@
 
 ```python
 %matplotlib inline
+from IPython import display
 import numpy as np
 import matplotlib.pyplot as plt
 from utils import *
+
+rng = np.random.default_rng(123)
 ```
 
 接下来，我们将希望能够投掷骰子。在统计学中，我们把从概率分布中抽取样本的过程称为*抽样*（sampling）。
@@ -47,31 +50,31 @@ from utils import *
 
 ```python
 fair_probs = [1.0 / 6] * 6
-np.random.multinomial(1, fair_probs)
+rng.multinomial(1, fair_probs)
 ```
-    array([0, 1, 0, 0, 0, 0])
+    array([0, 0, 0, 0, 0, 1])
 
 如果你运行采样器很多次，你会发现每次你都得到随机的值。在估计一个骰子的公平性时，我们经常希望从同一分布中生成多个样本。如果用Python的for循环来完成这个任务，速度会慢得令人难以忍受，因此我们使用的函数支持同时抽取多个样本，返回我们想要的任意形状的独立样本数组。
 
 ```python
-np.random.multinomial(10, fair_probs)
+rng.multinomial(10, fair_probs)
 ```
-    array([0, 3, 1, 1, 2, 3])
+    array([3, 3, 0, 2, 2, 0])
 
 现在我们知道如何对骰子进行采样，我们可以模拟1000次投掷。然后，我们可以统计1000次投掷后,每个数字被投中了多少次。具体来说，我们计算相对频率作为真实概率的估计。
 
 ```python
-counts = np.random.multinomial(1000, fair_probs).astype(np.float32)
+counts = rng.multinomial(1000, fair_probs).astype(np.float32)
 counts / 1000
 ```
-    array([0.157, 0.173, 0.146, 0.165, 0.188, 0.171], dtype=float32)
+    array([0.179, 0.173, 0.133, 0.175, 0.174, 0.166], dtype=float32)
 
 因为我们是从一个公平的骰子中生成的数据，我们知道每个结果都有真实的概率$\frac{1}{6}$，大约是$0.167$，所以上面输出的估计值看起来不错。
 
 我们也可以看到这些概率如何随着时间的推移收敛到真实概率。让我们进行500组实验，每组抽取10个样本。
 
 ```python
-counts = np.random.multinomial(10, fair_probs, size=500)
+counts = rng.multinomial(10, fair_probs, size=500)
 cum_counts = counts.astype(np.float32).cumsum(axis=0)
 estimates = cum_counts / cum_counts.sum(axis=1, keepdims=True)
 
@@ -86,7 +89,7 @@ plt.legend();
 ```
 
 <div align=center>
-<img src="../img/output_probability_245b7d_51_1.svg"/>
+<img src="../img/output_probability_245b7d_51_1.png"/>
 </div>
 
 每条实线对应于骰子的6个值中的一个，并给出骰子在每组实验后出现值的估计概率。
@@ -258,4 +261,4 @@ $$\mathrm{Var}[f(x)] = E\left[\left(f(x) - E[f(x)]\right)^2\right].$$
 1. 我们进行了$m=500$组实验，每组抽取$n=10$个样本。变化$m$和$n$，观察和分析实验结果。
 2. 给定两个概率为$P(\mathcal{A})$和$P(\mathcal{B})$的事件，计算$P(\mathcal{A} \cup \mathcal{B})$和$P(\mathcal{A} \cap \mathcal{B})$的上限和下限。（提示：使用[友元图](https://en.wikipedia.org/wiki/Venn_diagram)来展示这些情况。)
 3. 假设我们有一系列随机变量，例如$A$，$B$和$C$，其中$B$只依赖于$A$，而$C$只依赖于$B$，你能简化联合概率$P(A, B, C)$吗？（提示：这是一个[马尔可夫链](https://en.wikipedia.org/wiki/Markov_chain)。)
-4. 在 :numref:`subsec_probability_hiv_app`中，第一个测试更准确。为什么不运行第一个测试两次，而是同时运行第一个和第二个测试?
+4. 在2.6.2.6节中，第一个测试更准确。为什么不运行第一个测试两次，而是同时运行第一个和第二个测试?

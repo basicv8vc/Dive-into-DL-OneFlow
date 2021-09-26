@@ -58,7 +58,7 @@
   * [7.2. 使用块的网络（VGG）](chapter_convolutional-modern/vgg.md)
   * [7.3. 网络中的网络（NiN）](chapter_convolutional-modern/nin.md)
   * [7.4. 含并行连结的网络（GoogLeNet）](chapter_convolutional-modern/googlenet.md)
-  
+
   <!-- * [5.3. 延后初始化](chapter_deep-learning-computation/deferred-init.md) -->
 
 <!-- * 2\. 预备知识

@@ -7,6 +7,8 @@ from oneflow.utils import data
 import oneflow.utils.vision.transforms as transforms
 import numpy as np
 
+rng = np.random.default_rng(123)
+flow.manual_seed(123)
 
 class Timer:
     """记录多次运行时间。"""
@@ -106,7 +108,7 @@ def synthetic_data(w, b, num_examples):
     X = flow.randn(num_examples, w.shape[0])
     y = flow.matmul(X, w.reshape(w.shape[0], -1)) + b
     y = y.reshape(-1)
-    y += flow.tensor(np.random.normal(0, 0.01, y.shape[0]).astype(np.float32))
+    y += flow.tensor(rng.normal(0, 0.01, y.shape[0]).astype(np.float32))
     return X, flow.reshape(y, (-1, 1))
 
 

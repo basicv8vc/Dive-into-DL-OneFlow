@@ -15,6 +15,10 @@ import numpy as np
 from oneflow.utils import data
 from utils import *
 
+# 用于DataLoader复现结果
+g = flow.Generator()
+g.manual_seed(123)
+
 true_w = flow.tensor([2, -3.4])
 true_b = 4.2
 features, labels = synthetic_data(true_w, true_b, 1000)
@@ -40,26 +44,26 @@ data_iter = load_array((features, labels), batch_size)
 ```python
 next(iter(data_iter))
 ```
-    [tensor([[ 1.0465, -0.8870],
-            [-1.2154, -1.0623],
-            [-0.5468, -1.1910],
-            [ 0.6626,  1.8769],
-            [ 0.2354, -0.5244],
-            [ 0.2348,  0.4087],
-            [-1.5860, -1.0183],
-            [ 0.7382, -0.9572],
-            [ 1.9648, -0.3474],
-            [-0.3638,  0.3728]], dtype=oneflow.float32),
-    tensor([[ 9.2998],
-            [ 5.3765],
-            [ 7.1554],
-            [-0.8674],
-            [ 6.4757],
-            [ 3.2859],
-            [ 4.5020],
-            [ 8.9331],
-            [ 9.2940],
-            [ 2.2244]], dtype=oneflow.float32)]
+    [tensor([[-0.2061, -0.1628],
+            [ 1.0437, -0.1884],
+            [ 1.1569,  0.0608],
+            [-0.0457,  0.4002],
+            [ 1.1895, -0.2745],
+            [ 0.2632, -0.2540],
+            [-0.0290, -0.4582],
+            [ 1.5555, -1.0068],
+            [-0.8332,  2.1693],
+            [-2.4869,  1.0972]], dtype=oneflow.float32),
+    tensor([[ 4.3547],
+            [ 6.9433],
+            [ 6.2950],
+            [ 2.7572],
+            [ 7.5172],
+            [ 5.5745],
+            [ 5.7003],
+            [10.7223],
+            [-4.8401],
+            [-4.5075]], dtype=oneflow.float32)]
 
 
 ## 3.3.3. 定义模型
@@ -134,9 +138,9 @@ for epoch in range(num_epochs):
     l = loss(net(features), labels)
     print(f'epoch {epoch + 1}, loss {l:f}')
 ```
-    epoch 1, loss 0.000224
-    epoch 2, loss 0.000100
-    epoch 3, loss 0.000098
+    epoch 1, loss 0.000198
+    epoch 2, loss 0.000101
+    epoch 3, loss 0.000100
 
 下面我们比较生成数据集的真实参数和通过有限数据训练获得的模型参数。
 要访问参数，我们首先从`net`访问所需的层，然后读取该层的权重和偏置。
@@ -148,9 +152,9 @@ print('w的估计误差：', true_w - flow.reshape(w, true_w.shape))
 b = net[0].bias.data
 print('b的估计误差：', true_b - b)
 ```
-    w的估计误差： tensor([-0.0006,  0.0010], dtype=oneflow.float32,
+    w的估计误差： tensor([7.4911e-04, 1.6212e-05], dtype=oneflow.float32,
        grad_fn=<broadcast_sub_backward>)
-    b的估计误差： tensor([-2.1935e-05], dtype=oneflow.float32, grad_fn=<scalar_add_backward>)
+    b的估计误差： tensor([0.0001], dtype=oneflow.float32, grad_fn=<scalar_add_backward>)
 
 ## 3.3.8. 小结
 
